@@ -1,35 +1,32 @@
-import React from 'react';
-import { Button } from 'native-base';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from 'react';
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+import Intro from './Screens/intro';
+import HomeScreen from './Screens/home';
+
+const RootStack = createStackNavigator(
+  {
+    Home: HomeScreen,
+    Intro: Intro,
+  },
+  {
+    initialRouteName: 'Intro',
+    defaultNavigationOptions: {
+    headerStyle: {
+      backgroundColor: 'transparent',
+      zIndex: 100,
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+  },
+});
+
+const AppContainer = createAppContainer(RootStack);
 
 export default function App() {
-  started = () => {
-    alert('Lets Go !');
-  }
   return (
-    <View style={styles.container}>
-      <Text style={styles.containerText}>Music Player</Text>
-      <Button  style={{ backgroundColor: '#50394c', padding:50 }} 
-        onPress = { () => this.started() }>
-        <Text style = {styles.getStartedButtonText}>Start Listing!</Text>
-      </Button>
-    </View>
+    <AppContainer />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#c4b7a6',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  containerText: {
-    color: '#50394c',
-    fontSize: 50,
-    margin: 20,
-  },
-  getStartedButtonText: {
-    color: 'white',
-  }
-});

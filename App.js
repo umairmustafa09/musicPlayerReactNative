@@ -17,15 +17,14 @@ const RootStack = createStackNavigator(
       zIndex: 100,
       height: 80,
     },
-    // backgroundColor: 'red',
+    header: null,
     title: 'MPlayer',
     headerBackTitle: 'Back',
     headerTintColor: 'white',
     headerTitleStyle: {
-      fontSize: 30,
-      fontFamily: 'Cochin',
-      color: 'white',
-      // fontWeight: 'bold',
+    fontSize: 30,
+    fontFamily: 'Cochin',
+    color: 'white',
     },
   },
 });
@@ -37,3 +36,4 @@ export default function App() {
     <AppContainer />
   );
 }
+

@@ -2,21 +2,28 @@ import React, { useEffect, Component } from 'react';
 import { Button } from 'native-base';
 import { StyleSheet, Text, View } from 'react-native';
 import { Audio } from "expo-av";
+import * as DocumentPicker from 'expo-document-picker';
 
 
 export default function HomeScreen() {
 
-  const onDidMount = async () => {
-    soundObject = new Audio.Sound();
-    await soundObject.loadAsync(require('../assets/wohiKhudaHai.mp3'));
-  }
-  
   useEffect(() => {
-    onDidMount()
     return () => {
       stopMusic();
     }
   }, [])
+
+  const gotoPickSongFunc = async () => {
+    stopMusic();
+    pickSong();
+  }
+
+  const pickSong = async () => {
+    let result = await DocumentPicker.getDocumentAsync({});
+    soundObject = new Audio.Sound();
+    await soundObject.loadAsync({uri: result.uri});
+    console.log(soundObject);
+  }
 
   const btnPlayClicked = async () => {
     await soundObject.playAsync();
@@ -26,18 +33,22 @@ export default function HomeScreen() {
     await soundObject.pauseAsync();
   }
 
-  const stopMusic = () => {
-    soundObject.stopAsync();
+  const stopMusic = async () => {
+    await soundObject.stopAsync();
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.containerText}>Music Stack</Text>
-      <Button style={{ backgroundColor: '#1A535C', padding:50 }} 
+      <Button style={{ backgroundColor: '#1A535C', padding:50, margin: 20 }} 
+        onPress = { gotoPickSongFunc }>
+        <Text style = {styles.getStartedButtonText}>Choose Song</Text>
+      </Button>
+      <Button style={{ backgroundColor: '#1A535C', padding:50, margin: 20 }} 
         onPress = { btnPlayClicked }>
         <Text style = {styles.getStartedButtonText}>Play</Text>
       </Button>
-      <Button style={{ backgroundColor: '#1A535C', padding:50, margin:20 }} 
+      <Button style={{ backgroundColor: '#1A535C', padding:50, margin: 20 }} 
         onPress={ btnStopClicked }>
         <Text style = {styles.getStartedButtonText}>Pause</Text>
       </Button>
@@ -48,7 +59,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
   },

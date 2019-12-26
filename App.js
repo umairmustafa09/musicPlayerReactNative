@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { createAppContainer } from 'react-navigation';
+import { createAppContainer, withOrientation } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import Intro from './Screens/intro';
 import HomeScreen from './Screens/home';
@@ -13,13 +13,19 @@ const RootStack = createStackNavigator(
     initialRouteName: 'Intro',
     defaultNavigationOptions: {
     headerStyle: {
-      backgroundColor: 'transparent',
+      backgroundColor: '#1A535C',
       zIndex: 100,
+      height: 80,
     },
-    // headerLeft: null,
-    headerTintColor: '#1A535C',
+    // backgroundColor: 'red',
+    title: 'MPlayer',
+    headerBackTitle: 'Back',
+    headerTintColor: 'white',
     headerTitleStyle: {
-      fontWeight: 'bold',
+      fontSize: 30,
+      fontFamily: 'Cochin',
+      color: 'white',
+      // fontWeight: 'bold',
     },
   },
 });

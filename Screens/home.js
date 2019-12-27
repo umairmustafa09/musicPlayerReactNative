@@ -7,13 +7,31 @@ import * as DocumentPicker from 'expo-document-picker';
 
 export default function HomeScreen() {
 
+  const didMount = async () => {
+    try {
+      await Audio.setAudioModeAsync({
+       allowsRecordingIOS: false,
+       interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+       playsInSilentModeIOS: true,
+       interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
+       shouldDuckAndroid: true,
+       staysActiveInBackground: true,
+       playThroughEarpieceAndroid: true
+      })
+    
+      this.loadAudio()
+     } catch (e) {
+      console.log(e)
+     }
+  }
   useEffect(() => {
+    didMount();
     return () => {
       stopMusic();
     }
   }, [])
 
-  const gotoPickSongFunc = async () => {
+  const gotoPickSongFunc = async () => { 
     stopMusic();
     pickSong();
   }

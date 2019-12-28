@@ -3,10 +3,11 @@ import { Button } from 'native-base';
 import { StyleSheet, Text, View } from 'react-native';
 import { Audio } from "expo-av";
 import * as DocumentPicker from 'expo-document-picker';
+import LinkedList from './linkList.js';
 
 
 export default function HomeScreen() {
-
+  let songs = new LinkedList();
   const didMount = async () => {
     try {
       await Audio.setAudioModeAsync({
@@ -16,16 +17,16 @@ export default function HomeScreen() {
        interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
        shouldDuckAndroid: true,
        staysActiveInBackground: true,
-       playThroughEarpieceAndroid: true
+       playThroughEarpieceAndroid: true,
       })
-    
       this.loadAudio()
      } catch (e) {
       console.log(e)
      }
   }
+  
   useEffect(() => {
-    didMount();
+    didMount();    
     return () => {
       stopMusic();
     }
@@ -38,6 +39,8 @@ export default function HomeScreen() {
 
   const pickSong = async () => {
     let result = await DocumentPicker.getDocumentAsync({});
+    songs.add(result);
+    console.log(songs.size());
     soundObject = new Audio.Sound();
     await soundObject.loadAsync({uri: result.uri});
     console.log(soundObject);
@@ -55,6 +58,15 @@ export default function HomeScreen() {
     await soundObject.stopAsync();
   }
 
+  const btnLinkList = () => {
+  }
+
+  const btnNextSong = () => {
+  }
+
+  const btnPrevSong = () => {
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.containerText}>Music Stack</Text>
@@ -69,6 +81,14 @@ export default function HomeScreen() {
       <Button style={{ backgroundColor: '#1A535C', padding:50, margin: 20 }} 
         onPress={ btnStopClicked }>
         <Text style = {styles.getStartedButtonText}>Pause</Text>
+      </Button>
+      <Button style={{ backgroundColor: '#1A535C', padding:50, margin: 20 }} 
+        onPress={ btnNextSong }>
+        <Text style = {styles.getStartedButtonText}>Next</Text>
+      </Button>
+      <Button style={{ backgroundColor: '#1A535C', padding:50, margin: 20 }} 
+        onPress={ btnPrevSong }>
+        <Text style = {styles.getStartedButtonText}>Prev</Text>
       </Button>
     </View>
   );

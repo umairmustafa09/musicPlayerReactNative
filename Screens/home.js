@@ -66,14 +66,26 @@ export default function HomeScreen() {
   
   const btnNextSong = async () => {
     currentSongIndex++;
-    console.log( "currentSongIndex ",currentSongIndex );
-    loadSongfunc();
+    if( songs.size() >  currentSongIndex){
+      console.log( "currentSongIndex ",currentSongIndex );
+      loadSongfunc();
+    }
+    else{
+      currentSongIndex--;
+      alert('No next song avaliable');
+    }
   }
 
   const btnPrevSong = async () => {
     currentSongIndex--;
+    if( 0 <= currentSongIndex ){
     console.log( "currentSongIndex ",currentSongIndex );
     loadSongfunc();
+    }
+    else{
+      currentSongIndex++;
+      alert('No next song avaliable');
+    }
   }
 
   return (

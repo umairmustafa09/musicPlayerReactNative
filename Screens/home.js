@@ -1,4 +1,4 @@
-import React, { useEffect, Component } from 'react';
+import React, { useEffect } from 'react';
 import { Button } from 'native-base';
 import { StyleSheet, Text, View } from 'react-native';
 import { Audio } from "expo-av";
@@ -8,6 +8,7 @@ import LinkedList from './linkList.js';
 
 export default function HomeScreen() {
   let songs = new LinkedList();
+  let currentSongIndex = 0;
   const didMount = async () => {
     try {
       await Audio.setAudioModeAsync({
@@ -40,10 +41,15 @@ export default function HomeScreen() {
   const pickSong = async () => {
     let result = await DocumentPicker.getDocumentAsync({});
     songs.add(result);
-    console.log(songs.size());
+    console.log("songSize ",songs.size(0));
+    loadSongfunc();
+  }
+
+  const loadSongfunc = async () => {
+    let NowPlaying = songs.elementAt(currentSongIndex);
+    console.log( "currentSongIndex ",currentSongIndex, "NowPlaying ", NowPlaying );
     soundObject = new Audio.Sound();
-    await soundObject.loadAsync({uri: result.uri});
-    console.log(soundObject);
+    await soundObject.loadAsync({uri: NowPlaying.uri});
   }
 
   const btnPlayClicked = async () => {
@@ -57,14 +63,17 @@ export default function HomeScreen() {
   const stopMusic = async () => {
     await soundObject.stopAsync();
   }
-
-  const btnLinkList = () => {
+  
+  const btnNextSong = async () => {
+    currentSongIndex++;
+    console.log( "currentSongIndex ",currentSongIndex );
+    loadSongfunc();
   }
 
-  const btnNextSong = () => {
-  }
-
-  const btnPrevSong = () => {
+  const btnPrevSong = async () => {
+    currentSongIndex--;
+    console.log( "currentSongIndex ",currentSongIndex );
+    loadSongfunc();
   }
 
   return (

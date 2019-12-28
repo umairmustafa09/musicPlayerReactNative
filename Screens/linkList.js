@@ -1,5 +1,3 @@
-import React, { useEffect } from 'react';
-import { Text, View } from 'react-native';
 
 function LinkedList() { 
     var length = 0; 
@@ -49,7 +47,7 @@ function LinkedList() {
           previousNode.next = currentNode.next;
       }
   
-      length --;
+      length--;
     };
     
     this.isEmpty = function() {
@@ -70,7 +68,7 @@ function LinkedList() {
   
       return -1;
     };
-  
+
     this.elementAt = function(index) {
       var currentNode = head;
       var count = 0;
@@ -129,6 +127,18 @@ function LinkedList() {
       return currentNode.element;
     }
   
+    this.farwordTraverse = function(){
+      if(head === null){
+          console.log( "list is empty" );
+      } else {
+          var currentNode = head;
+          while(currentNode.next){
+              console.log( currentNode );
+              currentNode  = currentNode.next;
+          }
+      }
+
+    }
   } 
 
 export default LinkedList;

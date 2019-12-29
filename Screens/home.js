@@ -1,14 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from 'native-base';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons'
 import { Audio } from "expo-av";
 import * as DocumentPicker from 'expo-document-picker';
 import LinkedList from './linkList.js';
 
 
 export default function HomeScreen() {
-  let songs = new LinkedList();
-  let currentSongIndex = 0;
+  // let songs = ;
+  const [songs, setsongs] = useState(new LinkedList());
+  // let currentSongIndex = 0;
+  const [currentSongIndex, SetcurrentSongIndex] = useState(0);
+  const [isPlaying, SetisPlaying] = useState(false);
   const didMount = async () => {
     try {
       await Audio.setAudioModeAsync({
@@ -29,19 +33,19 @@ export default function HomeScreen() {
   useEffect(() => {
     didMount();    
     return () => {
-      stopMusic();
+      pauseSong();
     }
   }, [])
 
   const gotoPickSongFunc = async () => { 
-    stopMusic();
+    pauseSong();
     pickSong();
   }
 
   const pickSong = async () => {
     let result = await DocumentPicker.getDocumentAsync({});
     songs.add(result);
-    console.log("songSize ",songs.size(0));
+    console.log("songSize ",songs.size());
     loadSongfunc();
   }
 
@@ -52,38 +56,43 @@ export default function HomeScreen() {
     await soundObject.loadAsync({uri: NowPlaying.uri});
   }
 
-  const btnPlayClicked = async () => {
-    await soundObject.playAsync();
+  const btnPlayAndPauseClicked = async () => {
+    isPlaying == false  ? playSong() : pauseSong() ;
+    isPlaying == false  ? SetisPlaying(true) : SetisPlaying(false);
+    console.log( isPlaying, "songSize ",songs.size(),"currentSongIndex ",currentSongIndex);
   }
 
-  const btnStopClicked = async () => {
-    await soundObject.pauseAsync();
+  const playSong = async () => {
+    await soundObject.playAsync()
   }
 
-  const stopMusic = async () => {
+  const pauseSong = async () => {
+    await soundObject.pauseAsync()
+  }
+  const stopSong = async () => {
     await soundObject.stopAsync();
   }
   
   const btnNextSong = async () => {
-    currentSongIndex++;
+    SetcurrentSongIndex( currentSongIndex => ++currentSongIndex  )
     if( songs.size() >  currentSongIndex){
       console.log( "currentSongIndex ",currentSongIndex );
       loadSongfunc();
     }
     else{
-      currentSongIndex--;
+      SetcurrentSongIndex( currentSongIndex => --currentSongIndex  )
       alert('No next song avaliable');
     }
   }
 
   const btnPrevSong = async () => {
-    currentSongIndex--;
+    SetcurrentSongIndex( currentSongIndex => --currentSongIndex  )
     if( 0 <= currentSongIndex ){
     console.log( "currentSongIndex ",currentSongIndex );
     loadSongfunc();
     }
     else{
-      currentSongIndex++;
+      SetcurrentSongIndex( currentSongIndex => --currentSongIndex  )
       alert('No next song avaliable');
     }
   }
@@ -91,36 +100,47 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.containerText}>Music Stack</Text>
-      <Button style={{ backgroundColor: '#1A535C', padding:50, margin: 20 }} 
-        onPress = { gotoPickSongFunc }>
-        <Text style = {styles.getStartedButtonText}>Choose Song</Text>
-      </Button>
-      <Button style={{ backgroundColor: '#1A535C', padding:50, margin: 20 }} 
-        onPress = { btnPlayClicked }>
-        <Text style = {styles.getStartedButtonText}>Play</Text>
-      </Button>
-      <Button style={{ backgroundColor: '#1A535C', padding:50, margin: 20 }} 
-        onPress={ btnStopClicked }>
-        <Text style = {styles.getStartedButtonText}>Pause</Text>
-      </Button>
-      <Button style={{ backgroundColor: '#1A535C', padding:50, margin: 20 }} 
-        onPress={ btnNextSong }>
-        <Text style = {styles.getStartedButtonText}>Next</Text>
-      </Button>
-      <Button style={{ backgroundColor: '#1A535C', padding:50, margin: 20 }} 
-        onPress={ btnPrevSong }>
-        <Text style = {styles.getStartedButtonText}>Prev</Text>
-      </Button>
+      <View style={styles.iconContainer}>
+      <TouchableOpacity style={styles.control} onPress = { gotoPickSongFunc } >
+        <Ionicons name='ios-filing' size={48} color='#444' />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.control} >
+        <Ionicons name='ios-skip-backward' size={48} color='#444' onPress={ btnPrevSong } />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.control} onPress = { btnPlayAndPauseClicked }>
+        {isPlaying == false  ?
+        <Ionicons name='ios-play-circle' size={88} color='#444' />
+        :
+        <Ionicons name='md-pause' size={88} color='#444' />
+        } 
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.control} >
+        <Ionicons name='ios-skip-forward' size={48} color='#444' onPress={ btnNextSong }/>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.control} >
+        <Ionicons name='ios-close-circle' size={48} color='#444' />
+      </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  iconContainer: {
+    flex: 1,
+		backgroundColor: '#fff',
+		alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  control: {
+		margin: 20
+	},
   containerText: {
     color: '#1A535C',
     fontSize: 50,

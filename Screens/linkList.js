@@ -26,10 +26,8 @@ function LinkedList() {
           while(currentNode.next){
               currentNode  = currentNode.next;
           }
-  
           currentNode.next = node;
       }
-  
       length++;
     }; 
   
@@ -137,7 +135,6 @@ function LinkedList() {
               currentNode  = currentNode.next;
           }
       }
-
     }
   } 
 

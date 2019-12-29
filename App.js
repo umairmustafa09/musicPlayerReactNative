@@ -3,6 +3,7 @@ import { createAppContainer, withOrientation } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import Intro from './Screens/intro';
 import HomeScreen from './Screens/home';
+import Icon from './Icons/icon';
 
 const RootStack = createStackNavigator(
   {
@@ -15,15 +16,16 @@ const RootStack = createStackNavigator(
     headerStyle: {
       backgroundColor: '#1A535C',
       zIndex: 100,
-      height: 80,
+      height: 100,
     },
-    header: null,
-    title: 'MPlayer',
+    // header: null,
+    // title: 'musicPlayer',
+    headerTitle: <Icon/>,
     headerBackTitle: 'Back',
     headerTintColor: 'white',
     headerTitleStyle: {
     fontSize: 30,
-    fontFamily: 'Cochin',
+    // fontFamily: 'Cochin',
     color: 'white',
     },
   },

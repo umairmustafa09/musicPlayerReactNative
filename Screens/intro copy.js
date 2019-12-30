@@ -3,7 +3,6 @@ import { Button } from 'native-base';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function Intro(props) {
-  console.disableYellowBox = true;
   return (
     <View style={styles.container}>
       <Text style={styles.containerText}>Music Player</Text>
@@ -20,10 +19,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FCFCFC',
   },
   containerText: {
-    
     color: '#1A535C',
     fontSize: 50,
     margin: 20,

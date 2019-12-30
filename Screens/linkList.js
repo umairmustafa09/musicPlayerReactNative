@@ -1,4 +1,3 @@
-
 function LinkedList() { 
     var length = 0; 
     var head = null; 
@@ -30,23 +29,6 @@ function LinkedList() {
       }
       length++;
     }; 
-
-    this.remove = function(element){
-      var currentNode = head;
-      var previousNode;
-      if(currentNode.element === element){
-          head = currentNode.next;
-      } else {
-          while(currentNode.element !== element) {
-              previousNode = currentNode;
-              currentNode = currentNode.next;
-          }
-  
-          previousNode.next = currentNode.next;
-      }
-  
-      length--;
-    };
     
     this.isEmpty = function() {
       return length === 0;
@@ -76,41 +58,6 @@ function LinkedList() {
       }
       return currentNode.element;
     };    
-
-
-    this.findElement = function(element){
-      var currentNode = head;
-      while ( currentNode.element != element ){
-          currentNode = currentNode.next
-      }
-      return currentNode.element;
-    }
-    
-    this.addAt = function(index, element){
-      var node = new Node(element);
-  
-      var currentNode = head;
-      var previousNode;
-      var currentIndex = 0;
-  
-      if(index > length){
-          return false;
-      }
-  
-      if(index === 0){
-          node.next = currentNode;
-          head = node;
-      } else {
-          while(currentIndex < index){
-              currentIndex++;
-              previousNode = currentNode;
-              currentNode = currentNode.next;
-          }
-          node.next = currentNode;
-          previousNode.next = node;
-      }
-      length++;
-    }
     
     this.removeAt = function(index) {
       var currentNode = head;
@@ -131,18 +78,6 @@ function LinkedList() {
       }
       length--;
       return currentNode.element;
-    }
-  
-    this.farwordTraverse = function(){
-      if(head === null){
-          console.log( "list is empty" );
-      } else {
-          var currentNode = head;
-          while(currentNode.next){
-              console.log( currentNode );
-              currentNode  = currentNode.next;
-          }
-      }
     }
   } 
 

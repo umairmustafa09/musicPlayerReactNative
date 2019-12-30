@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-// import React from 'react'
-import { Button, InputGroup } from 'native-base';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'
 import { Audio } from "expo-av";
 import * as DocumentPicker from 'expo-document-picker';
@@ -15,6 +13,7 @@ export default function HomeScreen() {
   const [isPlaying, setIsPlaying] = useState(false);
   
   const didMount = async () => {
+    console.disableYellowBox = true;
     try {
       await Audio.setAudioModeAsync({
        allowsRecordingIOS: false,
@@ -46,13 +45,11 @@ export default function HomeScreen() {
   const pickSong = async () => {
     let result = await DocumentPicker.getDocumentAsync({});
     songs.add(result);
-    console.log("songSize ",songs.size());
     loadSongfunc();
   }
 
   const loadSongfunc = async () => {
     let NowPlaying = songs.elementAt(index);
-    console.log( "currentSongIndex ",currentSongIndex, "NowPlaying ", NowPlaying, "index", index );
     soundObject = new Audio.Sound();
     await soundObject.loadAsync({uri: NowPlaying.uri});
   }
@@ -62,7 +59,6 @@ export default function HomeScreen() {
     if( NowPlaying != null ){
       isPlaying == false  ? playSong() : pauseSong() ;
       isPlaying == false  ? setIsPlaying(true) : setIsPlaying(false);
-      console.log( isPlaying, "songSize ",songs.size(),"currentSongIndex ",currentSongIndex, "index", index);
     }
   }
 
@@ -78,23 +74,22 @@ export default function HomeScreen() {
   }
 
   const btnDeleteSong = () => {
-    console.log("index", index);
-    let NowPlaying = songs.elementAt(index);
-    console.log( "nowPlaying", NowPlaying );
+    console.log("index", index, "songSize", songs.size());
     songs.removeAt(index);
-    loadSongfunc();
-    stopSong();
     if( 0 < index ){
-      console.log("songs Size ", songs.size())
-      console.log( "index", index );
       index = songs.size() - 1;
-    // index--;
-    setCurrentSongIndex( index );
-    // stopSong();
+      setCurrentSongIndex( index );
+      stopSong();
+      loadSongfunc();
+      console.log("index", index, "songSize", songs.size());
+    }
+    else if( 0 == index ){
+      stopSong();
+      loadSongfunc();
+      console.log("index", index, "songSize", songs.size());
     }
     else if(songs.size() == 0){
       alert('you have on song left')
-      console.log(songs.size())
       loadSongfunc();
       stopSong();
     }
@@ -104,12 +99,10 @@ export default function HomeScreen() {
     ++index;
     setCurrentSongIndex( index );
     if( songs.size() >  index ){
-      console.log( "currentSongIndex ",currentSongIndex, "index ", index );
       stopSong();
       loadSongfunc();
     }
     else{
-      // setCurrentSongIndex( currentSongIndex - 1 )
       --index;
       setCurrentSongIndex( index );
       alert('No next song avaliable');
@@ -121,20 +114,19 @@ export default function HomeScreen() {
     --index;
     setCurrentSongIndex( index );
     if( 0 <= index ){
-    console.log( "currentSongIndex ",currentSongIndex, "index ", index );
     stopSong();
     loadSongfunc();
     }
     else{
       ++index;
-      setCurrentSongIndex( index, songs.elementAt(index) );
+      setCurrentSongIndex( index );
       alert('No next song avaliable');
     }
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.containerText}>Music Stack</Text>
+      <Ionicons name='ios-headset' size={300} color='#1A535C' />
       <View style={styles.iconContainer}>
       <TouchableOpacity style={styles.control} onPress = { gotoPickSongFunc } >
         <Ionicons name='ios-filing' size={48} color='#444' />

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { createAppContainer, withOrientation } from 'react-navigation';
+import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import Intro from './Screens/intro';
 import HomeScreen from './Screens/home';
@@ -18,14 +18,11 @@ const RootStack = createStackNavigator(
       zIndex: 100,
       height: 100,
     },
-    // header: null,
-    // title: 'musicPlayer',
     headerTitle: <Icon/>,
     headerBackTitle: 'Back',
     headerTintColor: 'white',
     headerTitleStyle: {
     fontSize: 30,
-    // fontFamily: 'Cochin',
     color: 'white',
     },
   },

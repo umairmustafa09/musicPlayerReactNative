@@ -30,7 +30,7 @@ function LinkedList() {
       }
       length++;
     }; 
-  
+
     this.remove = function(element){
       var currentNode = head;
       var previousNode;
@@ -75,8 +75,16 @@ function LinkedList() {
           currentNode = currentNode.next
       }
       return currentNode.element;
-    };
-    
+    };    
+
+
+    this.findElement = function(element){
+      var currentNode = head;
+      while ( currentNode.element != element ){
+          currentNode = currentNode.next
+      }
+      return currentNode.element;
+    }
     
     this.addAt = function(index, element){
       var node = new Node(element);

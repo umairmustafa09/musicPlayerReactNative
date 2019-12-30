@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from 'native-base';
+// import React from 'react'
+import { Button, InputGroup } from 'native-base';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'
 import { Audio } from "expo-av";
@@ -8,11 +9,11 @@ import LinkedList from './linkList.js';
 
 
 export default function HomeScreen() {
-  // let songs = ;
-  const [songs, setsongs] = useState(new LinkedList());
-  // let currentSongIndex = 0;
-  const [currentSongIndex, SetcurrentSongIndex] = useState(0);
-  const [isPlaying, SetisPlaying] = useState(false);
+  const [songs, setSongs] = useState(new LinkedList());
+  const [currentSongIndex, setCurrentSongIndex] = React.useState(0);
+  let index = currentSongIndex;
+  const [isPlaying, setIsPlaying] = useState(false);
+  
   const didMount = async () => {
     try {
       await Audio.setAudioModeAsync({
@@ -50,16 +51,19 @@ export default function HomeScreen() {
   }
 
   const loadSongfunc = async () => {
-    let NowPlaying = songs.elementAt(currentSongIndex);
-    console.log( "currentSongIndex ",currentSongIndex, "NowPlaying ", NowPlaying );
+    let NowPlaying = songs.elementAt(index);
+    console.log( "currentSongIndex ",currentSongIndex, "NowPlaying ", NowPlaying, "index", index );
     soundObject = new Audio.Sound();
     await soundObject.loadAsync({uri: NowPlaying.uri});
   }
 
   const btnPlayAndPauseClicked = async () => {
-    isPlaying == false  ? playSong() : pauseSong() ;
-    isPlaying == false  ? SetisPlaying(true) : SetisPlaying(false);
-    console.log( isPlaying, "songSize ",songs.size(),"currentSongIndex ",currentSongIndex);
+    let NowPlaying = songs.elementAt(index);
+    if( NowPlaying != null ){
+      isPlaying == false  ? playSong() : pauseSong() ;
+      isPlaying == false  ? setIsPlaying(true) : setIsPlaying(false);
+      console.log( isPlaying, "songSize ",songs.size(),"currentSongIndex ",currentSongIndex, "index", index);
+    }
   }
 
   const playSong = async () => {
@@ -72,27 +76,58 @@ export default function HomeScreen() {
   const stopSong = async () => {
     await soundObject.stopAsync();
   }
+
+  const btnDeleteSong = () => {
+    console.log("index", index);
+    let NowPlaying = songs.elementAt(index);
+    console.log( "nowPlaying", NowPlaying );
+    songs.removeAt(index);
+    loadSongfunc();
+    stopSong();
+    if( 0 < index ){
+      console.log("songs Size ", songs.size())
+      console.log( "index", index );
+      index = songs.size() - 1;
+    // index--;
+    setCurrentSongIndex( index );
+    // stopSong();
+    }
+    else if(songs.size() == 0){
+      alert('you have on song left')
+      console.log(songs.size())
+      loadSongfunc();
+      stopSong();
+    }
+  }
   
-  const btnNextSong = async () => {
-    SetcurrentSongIndex( currentSongIndex => ++currentSongIndex  )
-    if( songs.size() >  currentSongIndex){
-      console.log( "currentSongIndex ",currentSongIndex );
+  const btnNextSong = () => {
+    ++index;
+    setCurrentSongIndex( index );
+    if( songs.size() >  index ){
+      console.log( "currentSongIndex ",currentSongIndex, "index ", index );
+      stopSong();
       loadSongfunc();
     }
     else{
-      SetcurrentSongIndex( currentSongIndex => --currentSongIndex  )
+      // setCurrentSongIndex( currentSongIndex - 1 )
+      --index;
+      setCurrentSongIndex( index );
       alert('No next song avaliable');
     }
   }
 
-  const btnPrevSong = async () => {
-    SetcurrentSongIndex( currentSongIndex => --currentSongIndex  )
-    if( 0 <= currentSongIndex ){
-    console.log( "currentSongIndex ",currentSongIndex );
+
+  const btnPrevSong = () => {
+    --index;
+    setCurrentSongIndex( index );
+    if( 0 <= index ){
+    console.log( "currentSongIndex ",currentSongIndex, "index ", index );
+    stopSong();
     loadSongfunc();
     }
     else{
-      SetcurrentSongIndex( currentSongIndex => --currentSongIndex  )
+      ++index;
+      setCurrentSongIndex( index, songs.elementAt(index) );
       alert('No next song avaliable');
     }
   }
@@ -118,7 +153,7 @@ export default function HomeScreen() {
         <Ionicons name='ios-skip-forward' size={48} color='#444' onPress={ btnNextSong }/>
       </TouchableOpacity>
       <TouchableOpacity style={styles.control} >
-        <Ionicons name='ios-close-circle' size={48} color='#444' />
+        <Ionicons name='ios-close-circle' size={48} color='#444' onPress={ btnDeleteSong }/>
       </TouchableOpacity>
       </View>
     </View>

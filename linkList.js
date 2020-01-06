@@ -2,8 +2,8 @@ function LinkedList() {
     var length = 0; 
     var head = null; 
   
-    var Node = function(element){
-      this.element = element; 
+    var Node = function(song){
+      this.song = song; 
       this.next = null; 
     }; 
   
@@ -15,8 +15,8 @@ function LinkedList() {
       return head;
     };
   
-    this.add = function(element){
-      var node = new Node(element);
+    this.add = function(song){
+      var node = new Node(song);
       if(head === null){
           head = node;
       } else {
@@ -29,26 +29,7 @@ function LinkedList() {
       }
       length++;
     }; 
-    
-    this.isEmpty = function() {
-      return length === 0;
-    };
   
-    this.indexOf = function(element) {
-      var currentNode = head;
-      var index = -1;
-  
-      while(currentNode){
-          index++;
-          if(currentNode.element === element){
-              return index;
-          }
-          currentNode = currentNode.next;
-      }
-  
-      return -1;
-    };
-
     this.elementAt = function(index) {
       var currentNode = head;
       var count = 0;
@@ -56,7 +37,7 @@ function LinkedList() {
           count ++;
           currentNode = currentNode.next
       }
-      return currentNode.element;
+      return currentNode.song;
     };    
     
     this.removeAt = function(index) {
@@ -77,7 +58,7 @@ function LinkedList() {
           previousNode.next = currentNode.next
       }
       length--;
-      return currentNode.element;
+      return currentNode.song;
     }
   } 
 

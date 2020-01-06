@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'
 import { Audio } from "expo-av";
 import * as DocumentPicker from 'expo-document-picker';
-import LinkedList from './linkList.js';
+import LinkedList from '../linkList';
 
 
 export default function HomeScreen() {
   const [songs, setSongs] = useState(new LinkedList());
   const [currentSongIndex, setCurrentSongIndex] = React.useState(0);
-  let index = currentSongIndex;
   const [isPlaying, setIsPlaying] = useState(false);
+  let index = currentSongIndex;
+  
   
   const didMount = async () => {
     console.disableYellowBox = true;
@@ -50,6 +51,7 @@ export default function HomeScreen() {
 
   const loadSongfunc = async () => {
     let NowPlaying = songs.elementAt(index);
+    alert( 'Now Playing ' + NowPlaying.name );
     soundObject = new Audio.Sound();
     await soundObject.loadAsync({uri: NowPlaying.uri});
   }
@@ -74,19 +76,18 @@ export default function HomeScreen() {
   }
 
   const btnDeleteSong = () => {
-    console.log("index", index, "songSize", songs.size());
     songs.removeAt(index);
     if( 0 < index ){
       index = songs.size() - 1;
       setCurrentSongIndex( index );
       stopSong();
       loadSongfunc();
-      console.log("index", index, "songSize", songs.size());
+
     }
     else if( 0 == index ){
       stopSong();
       loadSongfunc();
-      console.log("index", index, "songSize", songs.size());
+
     }
     else if(songs.size() == 0){
       alert('you have on song left')

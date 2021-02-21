@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Image,
-  Text,
-  Alert
-} from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import * as DocumentPicker from "expo-document-picker";
+import MarqueeText from "react-native-marquee";
+
 import LinkedList from "../linkList";
 
 export default function HomeScreen() {
-  const DEFAULTTEXT = "Oops! no Song in List";
+  const DEFAULTTEXT = "No song available";
 
   const [songs, setSongs] = useState(new LinkedList());
   const [currentSongIndex, setCurrentSongIndex] = React.useState(0);
@@ -112,6 +107,7 @@ export default function HomeScreen() {
 
   const btnNextSong = () => {
     setIsPlaying(false);
+    stopSong();
     ++index;
     setCurrentSongIndex(index);
     if (songs.size() > index) {
@@ -126,6 +122,7 @@ export default function HomeScreen() {
 
   const btnPrevSong = () => {
     setIsPlaying(false);
+    stopSong();
     --index;
     setCurrentSongIndex(index);
     if (0 <= index) {
@@ -141,9 +138,18 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Ionicons name="ios-headset" size={300} color="#1A535C" />
-      <Text style={styles.songNameText}>
-        {songName.length > 25 ? songName.substring(0, 25) + "..." : songName}
-      </Text>
+      <View style={styles.SongNamecontainer}>
+        <MarqueeText
+          style={styles.songNameText}
+          duration={3000}
+          marqueeOnStart
+          loop
+          marqueeDelay={1000}
+          marqueeResetDelay={1000}
+        >
+          {songName}
+        </MarqueeText>
+      </View>
       <View style={styles.iconContainer}>
         <TouchableOpacity style={styles.control} onPress={gotoPickSongFunc}>
           <Ionicons name="ios-filing" size={48} color="#444" />
@@ -200,6 +206,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center"
+  },
+  SongNamecontainer: {
+    paddingLeft: 20,
+    paddingRight: 20
   },
   control: {
     margin: 20

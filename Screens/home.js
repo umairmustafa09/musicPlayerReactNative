@@ -43,6 +43,17 @@ export default function HomeScreen() {
     } catch (e) {
       console.log(e);
     }
+    setInterval(async () => {
+      if (soundObject) {
+        const status = await soundObject.getStatusAsync();
+        console.log({ status });
+        setSongStatus({
+          isBuffering: status.isBuffering,
+          durationMillis: status.durationMillis,
+          positionMillis: status.positionMillis
+        });
+      }
+    }, 1000);
   };
 
   useEffect(() => {
@@ -82,7 +93,6 @@ export default function HomeScreen() {
     let NowPlaying = songs.elementAt(index);
     setSongName(NowPlaying.name);
     soundObject = new Audio.Sound();
-    soundObject.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
     await soundObject.loadAsync({ uri: NowPlaying.uri });
   };
 
@@ -156,10 +166,7 @@ export default function HomeScreen() {
   };
 
   const handleSeek = async (seekValue) => {
-    await soundObject.setPositionAsync(parseInt(seekValue), {
-      toleranceMillisBefore: 0,
-      toleranceMillisAfter: 0
-    });
+    await soundObject.playFromPositionAsync(seekValue);
   };
 
   return (

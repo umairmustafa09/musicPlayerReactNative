@@ -34,8 +34,7 @@ const SeekBar = ({ positionMillis, durationMillis, stop, onSeek }) => {
           value={positionMillis}
           minimumTrackTintColor="lightgrey"
           maximumTrackTintColor="#000000"
-          onValueChange={onSeek}
-          onSlidingComplete={stop}
+          onSlidingComplete={onSeek}
         />
       </View>
     </>

@@ -1,18 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, TouchableOpacity, Text, Alert } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Alert,
+  ScrollView
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
 import * as DocumentPicker from "expo-document-picker";
 import MarqueeText from "react-native-marquee";
 
 import LinkedList from "../linkList";
+import SeekBar from "./seekBar";
 
 export default function HomeScreen() {
-  const DEFAULTTEXT = "No song available";
+  const DEFAULTTEXT = "No songs available";
 
   const [songs, setSongs] = useState(new LinkedList());
   const [currentSongIndex, setCurrentSongIndex] = React.useState(0);
   const [songName, setSongName] = React.useState(DEFAULTTEXT);
+  const [songStatus, setSongStatus] = React.useState({
+    isBuffering: false,
+    durationMillis: 0,
+    positionMillis: 0
+  });
   const [isPlaying, setIsPlaying] = useState(false);
   let index = currentSongIndex;
 
@@ -47,7 +59,6 @@ export default function HomeScreen() {
 
   const pickSong = async () => {
     let result = await DocumentPicker.getDocumentAsync({});
-    console.log({ result });
     if (result.name) {
       if (!songs.checkNode(result.name)) {
         songs.add(result);
@@ -59,10 +70,19 @@ export default function HomeScreen() {
     }
   };
 
+  const onPlaybackStatusUpdate = (status) => {
+    setSongStatus({
+      isBuffering: status.isBuffering,
+      durationMillis: status.durationMillis,
+      positionMillis: status.positionMillis
+    });
+  };
+
   const loadSongfunc = async () => {
     let NowPlaying = songs.elementAt(index);
     setSongName(NowPlaying.name);
     soundObject = new Audio.Sound();
+    soundObject.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
     await soundObject.loadAsync({ uri: NowPlaying.uri });
   };
 
@@ -135,8 +155,18 @@ export default function HomeScreen() {
     }
   };
 
+  const handleSeek = async (seekValue) => {
+    await soundObject.setPositionAsync(parseInt(seekValue), {
+      toleranceMillisBefore: 0,
+      toleranceMillisAfter: 0
+    });
+  };
+
   return (
-    <View style={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator={false}
+    >
       <Ionicons name="ios-headset" size={300} color="#1A535C" />
       <View style={styles.SongNamecontainer}>
         <MarqueeText
@@ -150,6 +180,15 @@ export default function HomeScreen() {
           {songName}
         </MarqueeText>
       </View>
+      <SeekBar
+        durationMillis={songStatus.durationMillis}
+        positionMillis={songStatus.positionMillis}
+        stop={() => {
+          setIsPlaying(false);
+          stopSong();
+        }}
+        onSeek={(e) => handleSeek(e)}
+      />
       <View style={styles.iconContainer}>
         <TouchableOpacity style={styles.control} onPress={gotoPickSongFunc}>
           <Ionicons name="ios-filing" size={48} color="#444" />
@@ -189,13 +228,12 @@ export default function HomeScreen() {
           />
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   iconContainer: {
-    flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
@@ -209,10 +247,11 @@ const styles = StyleSheet.create({
   },
   SongNamecontainer: {
     paddingLeft: 20,
-    paddingRight: 20
+    paddingRight: 20,
+    marginBottom: 50
   },
   control: {
-    margin: 20
+    margin: 15
   },
   containerText: {
     color: "#1A535C",

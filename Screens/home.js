@@ -180,10 +180,6 @@ export default function HomeScreen() {
       <SeekBar
         durationMillis={songStatus.durationMillis}
         positionMillis={songStatus.positionMillis}
-        stop={() => {
-          setIsPlaying(false);
-          stopSong();
-        }}
         onSeek={(e) => handleSeek(e)}
       />
       <View style={styles.iconContainer}>
